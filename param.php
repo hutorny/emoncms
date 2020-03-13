@@ -22,7 +22,7 @@ class Param
     private $params = array();
     
     // Associative array to make search fast
-    private $allowed_apis = array("input/post","input/bulk");
+    private $allowed_apis = array("input/post","input/bulk","input/batch");
     
     public $sha256base64_response = false;
 

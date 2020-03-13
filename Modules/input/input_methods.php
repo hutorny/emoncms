@@ -271,7 +271,23 @@ class InputMethods
         
         return "ok";
     }
-    
+    public function batch($userid, $nodeid)
+    {
+        $data =  json_decode(file_get_contents('php://input'), true);
+        if(json_last_error() !== JSON_ERROR_NONE) return "Data is not a valid JSON";
+        if( ! is_array($data) ) $data = [$data];
+        foreach ($data as $item) {
+            if ($item['time']) {
+                $time = (int) $item['time'];
+                unset($item['time']);
+                $result = $this->process_node($userid,$time,$nodeid,$item);
+                if ($result!==true) return $result;
+            } else {
+                $this->log->info("Batch record is missing time, skipping");
+            }
+        }
+        return "ok";
+    }
     // ------------------------------------------------------------------------------------
     // Register and process the inputs for the node given
     // This function is used by all input methods

@@ -206,14 +206,14 @@
         }
     }
 
-    if ($devicekey && !($route->controller == 'input' && ($route->action == 'bulk' || $route->action == 'post'))) {
+    if ($devicekey && !($route->controller == 'input' && ($route->action == 'bulk' || $route->action == 'post' || $route->action == 'batch'))) {
         header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized");
         print "Unauthorized. Device key autentication only permits input post or bulk actions";
         $log->error("Unauthorized. Device key autentication only permits input post or bulk actions");
         exit();
     }
 
-    if ($route->controller == 'input' && $route->action == 'bulk') $route->format = 'json';
+    if ($route->controller == 'input' && ($route->action == 'bulk' || $route->action == 'batch')) $route->format = 'json';
     else if ($route->controller == 'input' && $route->action == 'post') $route->format = 'json';
 
     // 6) Load the main page controller
@@ -293,6 +293,9 @@
             print $output['content'];
         } elseif ($route->controller=='input' && $route->action=='bulk') {
             header('Content-Type: text/plain');
+            print $output['content'];
+        } elseif ($route->controller=='input' && $route->action=='batch') {
+            header('Content-Type: application/json');
             print $output['content'];
         } else {
             header('Content-Type: application/json');

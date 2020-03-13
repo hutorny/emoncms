@@ -78,6 +78,21 @@ function input_controller()
             }
             return $result;
         }
+        // ------------------------------------------------------------------------
+        // input/batch
+        // ------------------------------------------------------------------------
+        else if ($route->action == 'batch') {
+            if ($route->subaction) { $nodeid = $route->subaction; } else { $nodeid = get('node'); }
+            $result = $inputMethods->batch($session['userid'], $nodeid);
+            if ($result=="ok") {
+                $result = '{"success": true}';
+            } else {
+                $result = '{"success": false, "message": "'.str_replace("\"","'",$result).'"}';
+                $log = new EmonLogger(__FILE__);
+                $log->error($result." for User: ".$session['userid']);
+            }
+            return $result;
+        }
         // ------------------------------------------------------------------------  
         else if ($route->action == "clean") {
             $route->format = 'text';
